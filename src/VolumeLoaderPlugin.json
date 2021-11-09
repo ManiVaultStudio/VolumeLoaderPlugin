@@ -1,6 +1,6 @@
 {
   "dependencies": [ "Points" ],
   "menuName": "Volume (.hdvol)",
-  "name": "Hdvol Loader",
+  "name": "Volume Loader",
   "version": "1"
 }

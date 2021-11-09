@@ -103,7 +103,7 @@ void VolumeLoaderPlugin::loadData()
         // creates a 4D dataVector of size (xSize,ySize,zSize,numDimensions) with inial values 0
         std::vector<std::vector<std::vector<std::vector<float>>>> dataArray(xSize, std::vector<std::vector<std::vector<float>>>(ySize, std::vector<std::vector<float>>(zSize,std::vector<float>(numDimensions,0))));
         // creates a 4D binary objectMask vector used for resetting non-Object points (so missing data) back to 0 after scaling has been performed
-        std::vector<std::vector<std::vector<std::vector<float>>>> dataMask(xSize, std::vector<std::vector<std::vector<float>>>(ySize, std::vector<std::vector<float>>(zSize, std::vector<float>(numDimensions, 0))));
+        std::vector<std::vector<std::vector<std::vector<float>>>> backgroundMask(xSize, std::vector<std::vector<std::vector<float>>>(ySize, std::vector<std::vector<float>>(zSize, std::vector<float>(numDimensions, 1))));
         
         // creates a 1D vector used to read the completed dataset into the hdps points datatype
         std::vector<float> dataSet((xSize * ySize*zSize* numDimensions));
@@ -133,7 +133,7 @@ void VolumeLoaderPlugin::loadData()
                 file.read((char*)&b, 4);
 
                 dataArray[xCor][yCor][zCor][i] = b; // read current dimension of current datapoint into the dataVector
-                dataMask[xCor][yCor][zCor][i] = 1; // set the current datapoint to 1 for non-missing data
+                backgroundMask[xCor][yCor][zCor][i] = 0; // set the current datapoint to 0 for non-missing data
                 
                 if (k == 0) {// if its the firs itteration set initial minimum
                     dimensionMinimum[i] = b; 
@@ -141,55 +141,34 @@ void VolumeLoaderPlugin::loadData()
                 if (b < dimensionMinimum[i]) { // otherwise only change the minimum if the current value is lower than the lowest value currently stored
                     dimensionMinimum[i] = b;
                 }
-                if (k == 0) {// if its the firs itteration set initial maximum
-                    dimensionMaximum[i] = b;
-                }
-                if (b > dimensionMaximum[i]) {// otherwise only change the maximum if the current value is lower than the highest value currently stored
-                    dimensionMaximum[i] = b;
-                }
+                
             }
         }
+        
+        
+        
+        
 
-        //------------------------------------------------------------------------- Can probably be merged, do if time left -----------------------------------------------------
-        //loop through the dataArray to scale all the datapoints from 1-100 for non-missing data and 0 for missing data
+        
+
+        int iterator = 0;
+        
+        //loop through the dataArray to scale all the datapoints and set background to minimum object value -1
         for (int z = 0; z < zSize; z++) {
             for (int y = 0; y < ySize; y++) {
                 for (int x = 0; x < xSize; x++) {
                     for (int dim = 0; dim < numDimensions; dim++) {
                         
-                        /**calculate the scaling with the following formula if desired range is [a,b]
-                        * 
-                        * x_normalized = ((b-a)* ((x-min(x))/(max(x)-min(x))))+a
-                        * 
-                        * Then multiply with the objectMask in order to make the missing data 0 again
-                        */
-
-                        dataArray[x][y][z][dim] = (((100-1)*((dataArray[x][y][z][dim] - dimensionMinimum[dim])/ (dimensionMaximum[dim] - dimensionMinimum[dim])))+1)*dataMask[x][y][z][dim];
                         
-                    }
-                }
-            }
-        }
-        
-    
-        int iterator = 0;
-        
-        index = 0;
 
-        
-        // loop through data again to read the dataArray into 1D vector 
-        for (int z = 0; z < zSize; z++) { 
-            for (int y = 0; y < ySize; y++) {
-                for (int x = 0; x < xSize; x++) {
-                    for (int dim=0; dim < numDimensions; dim++) {
-                        dataSet[iterator]=dataArray[x][y][z][dim];//Read out 4D vector, convert to 1D vector                       
-                        
+                        dataSet[iterator] = dataArray[x][y][z][dim]+backgroundMask[x][y][z][dim]*(dimensionMinimum[dim]-1);
                         iterator++;
                     }
                 }
             }
         }
-        //------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   
+      
         file.close(); // stop reading the file
         
        
