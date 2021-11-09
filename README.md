@@ -1,2 +1,2 @@
 # VolumeLoaderPlugin
-Loader plugin for volumetric image data
+Loader plugin for volumetric image data. Uses .hdvol datatype.
