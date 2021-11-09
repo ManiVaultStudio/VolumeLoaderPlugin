@@ -45,10 +45,8 @@ void VolumeLoaderPlugin::init()
 
 /**
  * Funtion the loads in the data and transforms it from its file type to pointsdata. 
- * It also fills in missing data in the input volume with 0 values (needed for visualization)
- * and scales all non-missing data from 1-100 in order to properly be able to use color maps 
- * without running into the issue of values inside the object having the same value as the missing
- * data values. The scaling also helps create a general colormap the works for all data.
+ * It also fills in missing data in the input volume with values 1 smaller than the smallest value in the dimension
+ * (needed for visualization).
  */
 void VolumeLoaderPlugin::loadData()
 {
@@ -149,9 +147,10 @@ void VolumeLoaderPlugin::loadData()
         
         
 
-        
+        std::vector<unsigned int, std::allocator<unsigned int>> selectionIndices;
 
         int iterator = 0;
+        //int selectCount = 0;
         
         //loop through the dataArray to scale all the datapoints and set background to minimum object value -1
         for (int z = 0; z < zSize; z++) {
@@ -162,6 +161,12 @@ void VolumeLoaderPlugin::loadData()
                         
 
                         dataSet[iterator] = dataArray[x][y][z][dim]+backgroundMask[x][y][z][dim]*(dimensionMinimum[dim]-1);
+
+                        
+                        //if (dataSet[iterator] != (dimensionMinimum[dim] - 1) && iterator % numDimensions == 0) {
+                        //    selectionIndices.push_back(iterator);
+                        //    //selectCount++;
+                        //}
                         iterator++;
                     }
                 }
@@ -186,8 +191,9 @@ void VolumeLoaderPlugin::loadData()
         // Notify the core system of the new data
         _core->notifyDataAdded(name);
 
-        
-
+       /* points.setSelection(selectionIndices);
+        points.createSubset("Object Data", name);
+        points.selectNone();*/
     }
     
 }
