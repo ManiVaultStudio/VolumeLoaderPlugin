@@ -162,11 +162,11 @@ void VolumeLoaderPlugin::loadData()
 
                         dataSet[iterator] = dataArray[x][y][z][dim]+backgroundMask[x][y][z][dim]*(dimensionMinimum[dim]-1);
 
-                        
-                        //if (dataSet[iterator] != (dimensionMinimum[dim] - 1) && iterator % numDimensions == 0) {
-                        //    selectionIndices.push_back(iterator);
-                        //    //selectCount++;
-                        //}
+                        // record indices containing only Object coordinates
+                        if (dataSet[iterator] != (dimensionMinimum[dim] - 1) && iterator % numDimensions == 0) {
+                            selectionIndices.push_back(iterator/numDimensions);
+                            //selectCount++;
+                        }
                         iterator++;
                     }
                 }
@@ -191,9 +191,14 @@ void VolumeLoaderPlugin::loadData()
         // Notify the core system of the new data
         _core->notifyDataAdded(name);
 
-       /* points.setSelection(selectionIndices);
-        points.createSubset("Object Data", name);
-        points.selectNone();*/
+
+        // create automatic object only subset
+        points.setSelection(selectionIndices);
+        auto subsetPoints = DataSet::getSourceData(points);
+        subsetPoints.createSubset("Object Only");
+        
+
+        points.selectNone();
     }
     
 }
