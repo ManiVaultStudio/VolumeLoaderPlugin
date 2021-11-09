@@ -8,12 +8,12 @@ using namespace hdps::plugin;
 // Loader
 // =============================================================================
 
-class HdvolLoaderPlugin : public QObject, public LoaderPlugin
+class VolumeLoaderPlugin : public QObject, public LoaderPlugin
 {
     Q_OBJECT
 public:
-    HdvolLoaderPlugin(const PluginFactory* factory) : LoaderPlugin(factory) { }
-    ~HdvolLoaderPlugin(void) override;
+    VolumeLoaderPlugin(const PluginFactory* factory) : LoaderPlugin(factory) { }
+    ~VolumeLoaderPlugin(void) override;
     
     void init() override;
 
@@ -30,18 +30,18 @@ private:
 // Factory
 // =============================================================================
 
-class HdvolLoaderPluginFactory : public LoaderPluginFactory
+class VolumeLoaderPluginFactory : public LoaderPluginFactory
 {
     Q_INTERFACES(hdps::plugin::LoaderPluginFactory hdps::plugin::PluginFactory)
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID   "nl.tudelft.HdvolLoaderPlugin"
-                      FILE  "HdvolLoaderPlugin.json")
+    Q_PLUGIN_METADATA(IID   "nl.tudelft.VolumeLoaderPlugin"
+                      FILE  "VolumeLoaderPlugin.json")
     
 public:
-    HdvolLoaderPluginFactory(void) {}
-    ~HdvolLoaderPluginFactory(void) override {}
+    VolumeLoaderPluginFactory(void) {}
+    ~VolumeLoaderPluginFactory(void) override {}
 
-    HdvolLoaderPlugin* produce() override;
+    VolumeLoaderPlugin* produce() override;
 
     hdps::DataTypes supportedDataTypes() const override;
 };

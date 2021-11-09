@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1.0)
 
-set(PROJECT "HdvolLoaderPlugin")
+set(PROJECT "VolumeLoaderPlugin")
 
 PROJECT(${PROJECT})
 
@@ -18,9 +18,9 @@ endif(MSVC)
 find_package(Qt5 COMPONENTS Widgets WebEngineWidgets REQUIRED)
 
 set(SOURCES
-    src/HdvolLoaderPlugin.h
-    src/HdvolLoaderPlugin.cpp
-    src/HdvolLoaderPlugin.json
+    src/VolumeLoaderPlugin.h
+    src/VolumeLoaderPlugin.cpp
+    src/VolumeLoaderPlugin.json
 )
 
 source_group( Plugin FILES ${SOURCES})

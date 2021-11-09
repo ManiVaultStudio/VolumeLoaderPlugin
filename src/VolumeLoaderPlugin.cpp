@@ -1,6 +1,6 @@
 
 
-#include "HdvolLoaderPlugin.h"
+#include "VolumeLoaderPlugin.h"
 
 #include "PointData.h"
 
@@ -20,7 +20,7 @@
 
 
 
-Q_PLUGIN_METADATA(IID "nl.tudelft.HdvolLoaderPlugin")
+Q_PLUGIN_METADATA(IID "nl.tudelft.VolumeLoaderPlugin")
 
 using namespace hdps;
 
@@ -28,7 +28,7 @@ using namespace hdps;
 // View
 // =============================================================================
 
-HdvolLoaderPlugin::~HdvolLoaderPlugin(void)
+VolumeLoaderPlugin::~VolumeLoaderPlugin(void)
 {
     
 }
@@ -38,7 +38,7 @@ HdvolLoaderPlugin::~HdvolLoaderPlugin(void)
  * This function gets called when an instance of the plugin is created.
  * In this case when someone select the loader option from the menu.
  */
-void HdvolLoaderPlugin::init()
+void VolumeLoaderPlugin::init()
 {
 
 }
@@ -50,7 +50,7 @@ void HdvolLoaderPlugin::init()
  * without running into the issue of values inside the object having the same value as the missing
  * data values. The scaling also helps create a general colormap the works for all data.
  */
-void HdvolLoaderPlugin::loadData()
+void VolumeLoaderPlugin::loadData()
 {
     
     
@@ -213,12 +213,12 @@ void HdvolLoaderPlugin::loadData()
     
 }
 
-HdvolLoaderPlugin* HdvolLoaderPluginFactory::produce()
+VolumeLoaderPlugin* VolumeLoaderPluginFactory::produce()
 {
-    return new HdvolLoaderPlugin(this);
+    return new VolumeLoaderPlugin(this);
 }
 
-hdps::DataTypes HdvolLoaderPluginFactory::supportedDataTypes() const
+hdps::DataTypes VolumeLoaderPluginFactory::supportedDataTypes() const
 {
     DataTypes supportedTypes;
     supportedTypes.append(PointType);
