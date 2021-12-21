@@ -71,10 +71,8 @@ void VolumeLoaderPlugin::loadData()
         std::string base_filename = filePath.toStdString().substr(filePath.toStdString().find_last_of("/\\") + 1);
         std::string::size_type const p(base_filename.find_last_of('.'));
         std::string fileName = base_filename.substr(0, p);
-        
 
-        QString name = _core->addData("Points", QString::fromStdString(fileName)); // create a datafile in the hdps core
-        Points& points = _core->requestData<Points>(name); // get the created datafile
+        auto points = _core->addDataset<Points>("Points", QString::fromStdString(fileName)); // create a datafile in the hdps core
 
         int a;
         float b;
@@ -179,7 +177,7 @@ void VolumeLoaderPlugin::loadData()
        
    
         
-        points.setData(dataSet.data(), xSize*ySize*zSize, numDimensions);// pass 1D vector to points data in core
+        points->setData(dataSet.data(), xSize*ySize*zSize, numDimensions);// pass 1D vector to points data in core
         
         
         //declare the x,y and z sizes of the data which is needed to create the imagedata object in the 3D viewer
@@ -189,16 +187,16 @@ void VolumeLoaderPlugin::loadData()
        
 
         // Notify the core system of the new data
-        _core->notifyDataAdded(name);
+        _core->notifyDataAdded(points);
 
 
         // create automatic object only subset
-        points.setSelection(selectionIndices);
-        auto subsetPoints = DataSet::getSourceData(points);
-        subsetPoints.createSubset("Object Only");
+        points->setSelectionIndices(selectionIndices);
+        auto subsetPoints = points->getSourceDataset<Points>();
+        subsetPoints->createSubset("Object Only");
         
 
-        points.selectNone();
+        points->selectNone();
     }
     
 }
