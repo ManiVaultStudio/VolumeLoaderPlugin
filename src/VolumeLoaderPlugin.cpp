@@ -74,6 +74,18 @@ void VolumeLoaderPlugin::loadData()
 
         auto points = _core->addDataset<Points>("Points", QString::fromStdString(fileName)); // create a datafile in the hdps core
 
+        // Notify the core system of the new data
+        _core->notifyDataAdded(points);
+
+        QCoreApplication::processEvents();
+
+        points->getDataHierarchyItem().setTaskRunning();
+        points->getDataHierarchyItem().setTaskName("Load volume");
+        
+        points->getDataHierarchyItem().setTaskDescription("Allocating voxels");
+
+        QCoreApplication::processEvents();
+        
         int a;
         float b;
         std::ifstream file(filePath.toStdString(), std::ios::in | std::ios::binary);
@@ -114,7 +126,12 @@ void VolumeLoaderPlugin::loadData()
         int index=0;
         int dataIterator;
         
-        
+        QCoreApplication::processEvents();
+
+        points->getDataHierarchyItem().setTaskDescription("Loading points");
+
+        QCoreApplication::processEvents();
+
         for (int k = 0; k < numPoints; k++) { // loop through all the datapoint specified in the hdvol file
             for (int t = 0; t < 3; t++) { // loop through xyz values of current datapoint
                 file.read((char*)&a, 4);
@@ -137,18 +154,32 @@ void VolumeLoaderPlugin::loadData()
                 if (b < dimensionMinimum[i]) { // otherwise only change the minimum if the current value is lower than the lowest value currently stored
                     dimensionMinimum[i] = b;
                 }
-                
             }
+
+            if ((k % 1000) == 0) {
+                points->getDataHierarchyItem().setTaskProgress(k / static_cast<float>(numPoints));
+                QCoreApplication::processEvents();
+            }
+                
         }
+
+        points->getDataHierarchyItem().setTaskProgress(1.0f);
+
+        QCoreApplication::processEvents();
+
+        file.close(); // stop reading the file
+
         
-        
-        
-        
+        points->getDataHierarchyItem().setTaskDescription("Masking points");
+        points->getDataHierarchyItem().setTaskProgress(0.0f);
+
 
         std::vector<unsigned int, std::allocator<unsigned int>> selectionIndices;
 
+        selectionIndices.reserve(xSize * ySize * zSize);
+
         int iterator = 0;
-        //int selectCount = 0;
+        int selectCount = 0;
         
         //loop through the dataArray to scale all the datapoints and set background to minimum object value -1
         for (int z = 0; z < zSize; z++) {
@@ -163,18 +194,26 @@ void VolumeLoaderPlugin::loadData()
                         // record indices containing only Object coordinates
                         if (dataSet[iterator] != (dimensionMinimum[dim] - 1) && iterator % numDimensions == 0) {
                             selectionIndices.push_back(iterator/numDimensions);
-                            //selectCount++;
+                            selectCount++;
                         }
                         iterator++;
                     }
                 }
             }
+
+            if ((z % 10) == 0) {
+                points->getDataHierarchyItem().setTaskProgress(z / static_cast<float>(zSize));
+                QCoreApplication::processEvents();
+            }
+            
         }
-   
-      
-        file.close(); // stop reading the file
+    
+        selectionIndices.resize(selectCount);
         
-       
+      
+        
+        
+        points->getDataHierarchyItem().setTaskProgress(1.0f);
    
         
         points->setData(dataSet.data(), xSize*ySize*zSize, numDimensions);// pass 1D vector to points data in core
@@ -186,17 +225,19 @@ void VolumeLoaderPlugin::loadData()
         points.setProperty("zDim", zSize);
        
 
-        // Notify the core system of the new data
-        _core->notifyDataAdded(points);
+        points->getDataHierarchyItem().setTaskDescription("Creating subset");
 
 
         // create automatic object only subset
         points->setSelectionIndices(selectionIndices);
-        auto subsetPoints = points->getSourceDataset<Points>();
-        subsetPoints->createSubset("Object Only");
-        
+        auto subset = points->createSubset("Object Only", points);
+
+        // Notify the core system of the new data
+        _core->notifyDataAdded(subset);
 
         points->selectNone();
+
+        points->getDataHierarchyItem().setTaskFinished();
     }
     
 }
