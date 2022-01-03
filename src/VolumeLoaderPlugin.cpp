@@ -210,20 +210,14 @@ void VolumeLoaderPlugin::loadData()
     
         selectionIndices.resize(selectCount);
         
-      
-        
-        
         points->getDataHierarchyItem().setTaskProgress(1.0f);
-   
         
         points->setData(dataSet.data(), xSize*ySize*zSize, numDimensions);// pass 1D vector to points data in core
         
-        
         //declare the x,y and z sizes of the data which is needed to create the imagedata object in the 3D viewer
-        points.setProperty("xDim", xSize);
-        points.setProperty("yDim", ySize);
-        points.setProperty("zDim", zSize);
-       
+        points->setProperty("xDim", xSize);
+        points->setProperty("yDim", ySize);
+        points->setProperty("zDim", zSize);
 
         points->getDataHierarchyItem().setTaskDescription("Creating subset");
 
