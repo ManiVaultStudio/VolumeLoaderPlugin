@@ -14,7 +14,6 @@
 #include <qmessagebox.h>
 
 #include <random>
-#include <windows.h>
 #include <vector>
 #include <algorithm>
 
