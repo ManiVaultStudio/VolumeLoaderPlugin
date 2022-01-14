@@ -14,7 +14,6 @@ if(MSVC)
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
 endif(MSVC)
-set_property(TARGET ${PROJECT} PROPERTY CXX_STANDARD 14)
 
 find_package(Qt5 COMPONENTS Widgets WebEngineWidgets REQUIRED)
 
@@ -29,6 +28,7 @@ source_group( Plugin FILES ${SOURCES})
 include_directories("$ENV{HDPS_INSTALL_DIR}/$<CONFIGURATION>/include/")
 
 add_library(${PROJECT} SHARED ${SOURCES})
+set_property(TARGET ${PROJECT} PROPERTY CXX_STANDARD 14)
 
 target_link_libraries(${PROJECT} Qt5::Widgets)
 target_link_libraries(${PROJECT} Qt5::WebEngineWidgets)
