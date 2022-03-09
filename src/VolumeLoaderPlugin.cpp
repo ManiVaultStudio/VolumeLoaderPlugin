@@ -74,7 +74,7 @@ void VolumeLoaderPlugin::loadData()
         auto points = _core->addDataset<Points>("Points", QString::fromStdString(fileName)); // create a datafile in the hdps core
 
         // Notify the core system of the new data
-        _core->notifyDataAdded(points);
+        _core->notifyDatasetAdded(points);
 
         QCoreApplication::processEvents();
 
@@ -223,10 +223,10 @@ void VolumeLoaderPlugin::loadData()
 
         // create automatic object only subset
         points->setSelectionIndices(selectionIndices);
-        auto subset = points->createSubset("Object Only", points);
+        auto subset = points->createSubsetFromSelection("Object Only", points);
 
         // Notify the core system of the new data
-        _core->notifyDataAdded(subset);
+        _core->notifyDatasetAdded(subset);
 
         points->selectNone();
 
