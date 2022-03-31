@@ -109,12 +109,12 @@ void VolumeLoaderPlugin::loadData()
         int zSize = dimensions[5] - dimensions[4];// calculate zSize
 
         // creates a 4D dataVector of size (xSize,ySize,zSize,numDimensions) with inial values 0
-        std::vector<std::vector<std::vector<std::vector<float>>>> dataArray(xSize, std::vector<std::vector<std::vector<float>>>(ySize, std::vector<std::vector<float>>(zSize,std::vector<float>(numDimensions,0))));
+        std::vector<std::vector<std::vector<std::vector<float>>>> dataArray(xSize, std::vector<std::vector<std::vector<float>>>(ySize, std::vector<std::vector<float>>(zSize,std::vector<float>(numDimensions, 0))));
         // creates a 4D binary objectMask vector used for resetting non-Object points (so missing data) back to 0 after scaling has been performed
         std::vector<std::vector<std::vector<std::vector<float>>>> backgroundMask(xSize, std::vector<std::vector<std::vector<float>>>(ySize, std::vector<std::vector<float>>(zSize, std::vector<float>(numDimensions, 1))));
         
         // creates a 1D vector used to read the completed dataset into the hdps points datatype
-        std::vector<float> dataSet((xSize * ySize*zSize* numDimensions));
+        std::vector<float> dataSet((xSize * ySize * zSize * numDimensions));
         
         // creates 1D vectors of size numDimensions that are used to contain the minimum and maximum values in each dimension for scaling purposes
         std::vector<float> dimensionMinimum(numDimensions, 0);
@@ -160,7 +160,6 @@ void VolumeLoaderPlugin::loadData()
                 points->getDataHierarchyItem().setTaskProgress(k / static_cast<float>(numPoints));
                 QCoreApplication::processEvents();
             }
-                
         }
 
         points->getDataHierarchyItem().setTaskProgress(1.0f);
@@ -186,14 +185,12 @@ void VolumeLoaderPlugin::loadData()
             for (int y = 0; y < ySize; y++) {
                 for (int x = 0; x < xSize; x++) {
                     for (int dim = 0; dim < numDimensions; dim++) {
-                        
-                        
 
-                        dataSet[iterator] = dataArray[x][y][z][dim]+backgroundMask[x][y][z][dim]*(dimensionMinimum[dim]-1);
+                        dataSet[iterator] = dataArray[x][y][z][dim] + backgroundMask[x][y][z][dim] * (dimensionMinimum[dim] - 1);
 
                         // record indices containing only Object coordinates
                         if (dataSet[iterator] != (dimensionMinimum[dim] - 1) && iterator % numDimensions == 0) {
-                            selectionIndices.push_back(iterator/numDimensions);
+                            selectionIndices.push_back(iterator / numDimensions);
                             selectCount++;
                         }
                         iterator++;
