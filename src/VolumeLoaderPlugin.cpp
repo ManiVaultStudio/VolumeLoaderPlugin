@@ -49,12 +49,12 @@ void VolumeLoaderPlugin::init()
  */
 void VolumeLoaderPlugin::loadData()
 {
-    
-    
-    
-    
-    QString filePath= QFileDialog::getOpenFileName(nullptr, "Open a .hdvol file", "C:/ "); // Open the file selector
-    
+    const auto workingDirectory = getSetting("Data/WorkingDirectory", QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)).toString();
+
+    QString filePath = QFileDialog::getOpenFileName(nullptr, "Open a .hdvol file", workingDirectory); // Open the file selector
+
+    if (QFileInfo(filePath).exists())
+        setSetting("Data/WorkingDirectory", QFileInfo(filePath).absoluteDir().absolutePath());
 
     std::string hdvol = ".hdvol"; 
 
