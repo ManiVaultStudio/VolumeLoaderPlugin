@@ -15,7 +15,7 @@ if(MSVC)
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
 endif(MSVC)
 
-find_package(Qt5 COMPONENTS Widgets WebEngineWidgets REQUIRED)
+find_package(Qt6 COMPONENTS Widgets WebEngineWidgets REQUIRED)
 
 set(SOURCES
     src/VolumeLoaderPlugin.h
@@ -35,8 +35,8 @@ if(MSVC)
 else()
     set(LIB_SUFFIX "${CMAKE_SHARED_LIBRARY_SUFFIX}")
 endif()
-target_link_libraries(${PROJECT} Qt5::Widgets)
-target_link_libraries(${PROJECT} Qt5::WebEngineWidgets)
+target_link_libraries(${PROJECT} Qt6::Widgets)
+target_link_libraries(${PROJECT} Qt6::WebEngineWidgets)
 target_link_libraries(${PROJECT} "$ENV{HDPS_INSTALL_DIR}/$<CONFIGURATION>/lib/${CMAKE_SHARED_LIBRARY_PREFIX}HDPS_Public${LIB_SUFFIX}")
 target_link_libraries(${PROJECT} "$ENV{HDPS_INSTALL_DIR}/$<CONFIGURATION>/lib/${CMAKE_SHARED_LIBRARY_PREFIX}PointData${LIB_SUFFIX}")
 
