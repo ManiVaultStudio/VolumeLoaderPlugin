@@ -1,4 +1,5 @@
-from conans import ConanFile, CMake
+from conans import ConanFile
+from conan.tools.cmake import CMakeDeps, CMake, CMakeToolchain
 from conans.tools import save, load
 import os
 import shutil
@@ -18,14 +19,16 @@ class VolumeLoaderPluginConan(ConanFile):
     """
 
     name = "VolumeLoaderPlugin"
-    description = "A Plugin for loading volume data in the high-dimensional plugin system (HDPS)."
+    description = (
+        "A Plugin for loading volume data in the high-dimensional plugin system (HDPS)."
+    )
     topics = ("hdps", "plugin", "volume data", "viewing")
     url = "https://github.com/hdps/VolumeLoaderPlugin"
     author = "B. van Lew b.van_lew@lumc.nl"  # conan recipe author
     license = "MIT"
 
     short_paths = True
-    generators = "cmake"
+    generators = "CMakeDeps"
 
     # Options may need to change depending on the packaged library
     settings = {"os": None, "build_type": None, "compiler": None, "arch": None}
@@ -69,10 +72,7 @@ class VolumeLoaderPluginConan(ConanFile):
 
     # Remove runtime and use always default (MD/MDd)
     def configure(self):
-        if self.settings.compiler == "Visual Studio":
-            del self.settings.compiler.runtime
-        # Use the small VTK build
-        self.options["vtk"].basic_viewer = True
+        pass
 
     def system_requirements(self):
         #  May be needed for macOS or Linux
@@ -82,20 +82,27 @@ class VolumeLoaderPluginConan(ConanFile):
         if self.settings.os == "Windows":
             del self.options.fPIC
 
-    def _configure_cmake(self, build_type):
-        # locate Qt root to allow find_package to work
+    def generate(self):
+        generator = None
+        if self.settings.os == "Macos":
+            generator = "Xcode"
+        if self.settings.os == "Linux":
+            generator = "Ninja Multi-Config"
+        # Use the Qt provided .cmake files
         qtpath = pathlib.Path(self.deps_cpp_info["qt"].rootpath)
-        qt_root = str(list(qtpath.glob("**/Qt5Config.cmake"))[0].parents[3])
-        print("Qt root ", qt_root)
+        qt_root = str(list(qtpath.glob("**/Qt6Config.cmake"))[0].parents[3].as_posix())
 
-        cmake = CMake(self, build_type=build_type)
+        tc = CMakeToolchain(self, generator=generator)
         if self.settings.os == "Windows" and self.options.shared:
-            cmake.definitions["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = True
+            tc.variables["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = True
         if self.settings.os == "Linux" or self.settings.os == "Macos":
-            cmake.definitions["CMAKE_CXX_STANDARD_REQUIRED"] = "ON"
-        cmake.definitions["CMAKE_PREFIX_PATH"] = qt_root
-        cmake.definitions["CMAKE_FIND_PACKAGE_PREFER_CONFIG"] = "ON"
-        cmake.configure(source_folder="hdps/VolumeLoaderPlugin")  # needed for scm
+            tc.variables["CMAKE_CXX_STANDARD_REQUIRED"] = "ON"
+        tc.variables["CMAKE_PREFIX_PATH"] = qt_root
+        tc.generate()
+
+    def _configure_cmake(self):
+        cmake = CMake(self)
+        cmake.configure(build_script_folder="hdps/VolumeLoaderPlugin")
         cmake.verbose = True
         return cmake
 
@@ -112,11 +119,13 @@ class VolumeLoaderPluginConan(ConanFile):
         print("Install dir type: ", self.install_dir)
         shutil.copytree(hdps_pkg_root, self.install_dir)
 
-        cmake_debug = self._configure_cmake("Debug")
-        cmake_debug.build()
+        cmake = self._configure_cmake()
+        cmake.build(build_type="Debug")
+        cmake.install(build_type="Debug")
 
-        cmake_release = self._configure_cmake("Release")
-        cmake_release.build()
+        # cmake_release = self._configure_cmake()
+        cmake.build(build_type="Release")
+        cmake.install(build_type="Release")
 
     def package(self):
         package_dir = os.path.join(self.build_folder, "package")
