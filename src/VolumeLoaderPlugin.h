@@ -42,6 +42,13 @@ public:
     VolumeLoaderPluginFactory(void) {}
     ~VolumeLoaderPluginFactory(void) override {}
 
+    /**
+     * Get plugin icon
+     * @param color Icon color for flat (font) icons
+     * @return Icon
+     */
+    QIcon getIcon(const QColor& color = Qt::black) const override;
+
     VolumeLoaderPlugin* produce() override;
 
     hdps::DataTypes supportedDataTypes() const override;

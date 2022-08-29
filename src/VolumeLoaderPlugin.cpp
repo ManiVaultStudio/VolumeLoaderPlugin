@@ -235,6 +235,11 @@ void VolumeLoaderPlugin::loadData()
     
 }
 
+QIcon VolumeLoaderPluginFactory::getIcon(const QColor& color /*= Qt::black*/) const
+{
+    return hdps::Application::getIconFont("FontAwesome").getIcon("cube", color);
+}
+
 VolumeLoaderPlugin* VolumeLoaderPluginFactory::produce()
 {
     return new VolumeLoaderPlugin(this);
