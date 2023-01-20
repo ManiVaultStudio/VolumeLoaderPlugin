@@ -208,6 +208,7 @@ void VolumeLoaderPlugin::loadData()
         }
     
         selectionIndices.resize(selectCount);
+
         
         points->getDataHierarchyItem().setTaskProgress(1.0f);
         
@@ -217,6 +218,9 @@ void VolumeLoaderPlugin::loadData()
         points->setProperty("xDim", xSize);
         points->setProperty("yDim", ySize);
         points->setProperty("zDim", zSize);
+        std::vector<QString> names = { "xDim", "yDim", "zDim" };
+        points->setDimensionNames(names);
+        _core->notifyDatasetChanged(points);
 
         points->getDataHierarchyItem().setTaskDescription("Creating subset");
 
