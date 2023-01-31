@@ -74,7 +74,7 @@ void VolumeLoaderPlugin::loadData()
         auto points = _core->addDataset<Points>("Points", QString::fromStdString(fileName)); // create a datafile in the hdps core
 
         // Notify the core system of the new data
-        _core->notifyDatasetAdded(points);
+        events().notifyDatasetAdded(points);
 
         QCoreApplication::processEvents();
 
@@ -220,7 +220,7 @@ void VolumeLoaderPlugin::loadData()
         points->setProperty("zDim", zSize);
         std::vector<QString> names = { "xDim", "yDim", "zDim" };
         points->setDimensionNames(names);
-        _core->notifyDatasetChanged(points);
+        events().notifyDatasetChanged(points);
 
         points->getDataHierarchyItem().setTaskDescription("Creating subset");
 
@@ -230,7 +230,7 @@ void VolumeLoaderPlugin::loadData()
         auto subset = points->createSubsetFromSelection("Object Only", points);
 
         // Notify the core system of the new data
-        _core->notifyDatasetAdded(subset);
+        events().notifyDatasetAdded(subset);
 
         points->selectNone();
 
