@@ -2,7 +2,7 @@
 
 #include "VolumeLoaderPlugin.h"
 
-#include "PointData.h"
+#include "PointData/PointData.h"
 
 #include "Set.h"
 #include<iostream> 
