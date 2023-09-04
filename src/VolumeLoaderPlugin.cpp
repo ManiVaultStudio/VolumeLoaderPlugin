@@ -201,11 +201,13 @@ void VolumeLoaderPlugin::loadData()
                         {
                             dataSetxyz[iteratorXyz] = y;
                             iteratorXyz++;
+
                         }
                         else if (dim == 2) {
                             dataSetxyz[iteratorXyz] = z;
                             iteratorXyz++;
                         }
+
                         else {
                             dataSet[iterator] = dataArray[x][y][z][dim] + backgroundMask[x][y][z][dim] * (dimensionMinimum[dim] - 1);
                             // record indices containing only Object coordinates
@@ -215,14 +217,13 @@ void VolumeLoaderPlugin::loadData()
                             }
                             iterator++;
                         }
-                        
 
                     }
                 }
             }
 
             if ((z % 10) == 0) {
-                
+
                 points->getDataHierarchyItem().setTaskProgress(z / static_cast<float>(zSize));
                 QCoreApplication::processEvents();
             }
@@ -238,7 +239,7 @@ void VolumeLoaderPlugin::loadData()
         std::cout << "im here" << std::endl;
         Dataset<Points> xyzData = _core->addDataset("Points", "xyz", points);
         events().notifyDatasetAdded(xyzData);
-        
+
         Dataset<Points> colorTest = _core->addDataset<Points>("Points", "colorTest");
         events().notifyDatasetAdded(colorTest);
         std::vector<float> testcolor;
@@ -258,7 +259,7 @@ void VolumeLoaderPlugin::loadData()
 
 
 
-        
+
 
         xyzData->setData(dataSetxyz.data(), xSize * ySize * zSize, 3);
         colorTest->setData(testcolor.data(), xSize * ySize * zSize, 1);
@@ -271,17 +272,18 @@ void VolumeLoaderPlugin::loadData()
         points->setProperty("zDim", zSize);
         std::vector<QString> names = { "xDim", "yDim", "zDim" };
         points->setDimensionNames(names);
-        events().notifyDatasetChanged(points);
+        events().notifyDatasetDataChanged(points);
 
         points->getDataHierarchyItem().setTaskDescription("Creating subset");
 
 
         // create automatic object only subset
         points->setSelectionIndices(selectionIndices);
-        
+
         //points->setSelec
         auto subset = points->createSubsetFromSelection("Object Only", points);
        
+
 
         // Notify the core system of the new data
 
