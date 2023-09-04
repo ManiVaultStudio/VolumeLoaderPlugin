@@ -201,11 +201,13 @@ void VolumeLoaderPlugin::loadData()
                         {
                             dataSetxyz[iteratorXyz] = y;
                             iteratorXyz++;
+
                         }
                         else if (dim == 2) {
                             dataSetxyz[iteratorXyz] = z;
                             iteratorXyz++;
                         }
+
                         else {
                             dataSet[iterator] = dataArray[x][y][z][dim] + backgroundMask[x][y][z][dim] * (dimensionMinimum[dim] - 1);
                             // record indices containing only Object coordinates
@@ -215,7 +217,6 @@ void VolumeLoaderPlugin::loadData()
                             }
                             iterator++;
                         }
-
 
                     }
                 }
@@ -281,6 +282,7 @@ void VolumeLoaderPlugin::loadData()
 
         //points->setSelec
         auto subset = points->createSubsetFromSelection("Object Only", points);
+       
 
 
         // Notify the core system of the new data
