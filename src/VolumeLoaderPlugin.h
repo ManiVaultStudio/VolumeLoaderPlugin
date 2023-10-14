@@ -2,7 +2,7 @@
 
 #include <LoaderPlugin.h>
 
-using namespace hdps::plugin;
+using namespace mv::plugin;
 
 
 // =============================================================================
@@ -33,7 +33,7 @@ private:
 
 class VolumeLoaderPluginFactory : public LoaderPluginFactory
 {
-    Q_INTERFACES(hdps::plugin::LoaderPluginFactory hdps::plugin::PluginFactory)
+    Q_INTERFACES(mv::plugin::LoaderPluginFactory mv::plugin::PluginFactory)
     Q_OBJECT
     Q_PLUGIN_METADATA(IID   "nl.tudelft.VolumeLoaderPlugin"
                       FILE  "VolumeLoaderPlugin.json")
@@ -51,5 +51,5 @@ public:
 
     VolumeLoaderPlugin* produce() override;
 
-    hdps::DataTypes supportedDataTypes() const override;
+    mv::DataTypes supportedDataTypes() const override;
 };
