@@ -78,10 +78,11 @@ void VolumeLoaderPlugin::loadData()
 
         QCoreApplication::processEvents();
 
-        points->getDataHierarchyItem().setTaskRunning();
-        points->getDataHierarchyItem().setTaskName("Load volume");
+        auto& task = points->getTask();
 
-        points->getDataHierarchyItem().setTaskDescription("Allocating voxels");
+        task.setRunning();
+        task.setName("Load volume");
+        task.setProgressDescription("Allocating voxels");
 
         QCoreApplication::processEvents();
 
@@ -130,7 +131,7 @@ void VolumeLoaderPlugin::loadData()
 
         QCoreApplication::processEvents();
 
-        points->getDataHierarchyItem().setTaskDescription("Loading points");
+        task.setProgressDescription("Loading points");
 
         QCoreApplication::processEvents();
 
@@ -159,21 +160,21 @@ void VolumeLoaderPlugin::loadData()
             }
 
             if ((k % 1000) == 0) {
-                points->getDataHierarchyItem().setTaskProgress(k / static_cast<float>(numPoints));
+                task.setProgress(k / static_cast<float>(numPoints));
                 QCoreApplication::processEvents();
             }
 
         }
 
-        points->getDataHierarchyItem().setTaskProgress(1.0f);
+        task.setProgress(1.0f);
 
         QCoreApplication::processEvents();
 
         file.close(); // stop reading the file
 
 
-        points->getDataHierarchyItem().setTaskDescription("Masking points");
-        points->getDataHierarchyItem().setTaskProgress(0.0f);
+        task.setDescription("Masking points");
+        task.setProgress(0.0f);
 
 
         std::vector<unsigned int> selectionIndices;
@@ -224,7 +225,7 @@ void VolumeLoaderPlugin::loadData()
 
             if ((z % 10) == 0) {
 
-                points->getDataHierarchyItem().setTaskProgress(z / static_cast<float>(zSize));
+                task.setProgress(z / static_cast<float>(zSize));
                 QCoreApplication::processEvents();
             }
 
@@ -234,7 +235,7 @@ void VolumeLoaderPlugin::loadData()
         std::cout << selectionIndices.size() << std::endl;
 
 
-        points->getDataHierarchyItem().setTaskProgress(1.0f);
+        task.setProgress(1.0f);
 
         std::cout << "im here" << std::endl;
         Dataset<Points> xyzData = _core->addDataset("Points", "xyz", points);
@@ -274,7 +275,7 @@ void VolumeLoaderPlugin::loadData()
         points->setDimensionNames(names);
         events().notifyDatasetDataChanged(points);
 
-        points->getDataHierarchyItem().setTaskDescription("Creating subset");
+        task.setDescription("Creating subset");
 
 
         // create automatic object only subset
@@ -290,7 +291,7 @@ void VolumeLoaderPlugin::loadData()
 
         points->selectNone();
 
-        points->getDataHierarchyItem().setTaskFinished();
+        task.setFinished();
 
 
     }
