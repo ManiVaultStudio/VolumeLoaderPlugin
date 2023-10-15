@@ -21,7 +21,7 @@
 
 Q_PLUGIN_METADATA(IID "nl.tudelft.VolumeLoaderPlugin")
 
-using namespace hdps;
+using namespace mv;
 
 // =============================================================================
 // View
@@ -300,7 +300,7 @@ void VolumeLoaderPlugin::loadData()
 
 QIcon VolumeLoaderPluginFactory::getIcon(const QColor& color /*= Qt::black*/) const
 {
-    return hdps::Application::getIconFont("FontAwesome").getIcon("cube", color);
+    return mv::Application::getIconFont("FontAwesome").getIcon("cube", color);
 }
 
 VolumeLoaderPlugin* VolumeLoaderPluginFactory::produce()
@@ -308,7 +308,7 @@ VolumeLoaderPlugin* VolumeLoaderPluginFactory::produce()
     return new VolumeLoaderPlugin(this);
 }
 
-hdps::DataTypes VolumeLoaderPluginFactory::supportedDataTypes() const
+mv::DataTypes VolumeLoaderPluginFactory::supportedDataTypes() const
 {
     DataTypes supportedTypes;
     supportedTypes.append(PointType);
