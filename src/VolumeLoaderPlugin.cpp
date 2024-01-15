@@ -71,10 +71,7 @@ void VolumeLoaderPlugin::loadData()
         std::string::size_type const p(base_filename.find_last_of('.'));
         std::string fileName = base_filename.substr(0, p);
 
-        auto points = _core->addDataset<Points>("Points", QString::fromStdString(fileName)); // create a datafile in the hdps core
-
-        // Notify the core system of the new data
-        events().notifyDatasetAdded(points);
+        auto points = mv::data().createDataset<Points>("Points", QString::fromStdString(fileName)); // create a datafile in the hdps core
 
         QCoreApplication::processEvents();
 
@@ -238,11 +235,10 @@ void VolumeLoaderPlugin::loadData()
         task.setProgress(1.0f);
 
         std::cout << "im here" << std::endl;
-        Dataset<Points> xyzData = _core->addDataset("Points", "xyz", points);
-        events().notifyDatasetAdded(xyzData);
+        Dataset<Points> xyzData = mv::data().createDataset("Points", "xyz", points);
 
-        Dataset<Points> colorTest = _core->addDataset<Points>("Points", "colorTest");
-        events().notifyDatasetAdded(colorTest);
+        Dataset<Points> colorTest = mv::data().createDataset<Points>("Points", "colorTest");
+
         std::vector<float> testcolor;
 
         for (int i = 0; i < xSize * ySize * zSize; i++)
