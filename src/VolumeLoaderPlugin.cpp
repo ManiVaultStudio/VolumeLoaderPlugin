@@ -294,6 +294,11 @@ void VolumeLoaderPlugin::loadData()
 
 }
 
+VolumeLoaderPluginFactory::VolumeLoaderPluginFactory()
+{
+    setIconByName("cube");
+}
+
 VolumeLoaderPlugin* VolumeLoaderPluginFactory::produce()
 {
     return new VolumeLoaderPlugin(this);

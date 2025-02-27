@@ -39,8 +39,9 @@ class VolumeLoaderPluginFactory : public LoaderPluginFactory
                       FILE  "VolumeLoaderPlugin.json")
     
 public:
-    VolumeLoaderPluginFactory(void) {}
-    ~VolumeLoaderPluginFactory(void) override {}
+    VolumeLoaderPluginFactory();
+
+    ~VolumeLoaderPluginFactory() override {}
 
     VolumeLoaderPlugin* produce() override;
 
