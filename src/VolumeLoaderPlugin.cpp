@@ -294,9 +294,9 @@ void VolumeLoaderPlugin::loadData()
 
 }
 
-QIcon VolumeLoaderPluginFactory::getIcon(const QColor& color /*= Qt::black*/) const
+VolumeLoaderPluginFactory::VolumeLoaderPluginFactory()
 {
-    return mv::Application::getIconFont("FontAwesome").getIcon("cube", color);
+    setIconByName("cube");
 }
 
 VolumeLoaderPlugin* VolumeLoaderPluginFactory::produce()

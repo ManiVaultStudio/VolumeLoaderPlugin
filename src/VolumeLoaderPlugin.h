@@ -39,15 +39,9 @@ class VolumeLoaderPluginFactory : public LoaderPluginFactory
                       FILE  "VolumeLoaderPlugin.json")
     
 public:
-    VolumeLoaderPluginFactory(void) {}
-    ~VolumeLoaderPluginFactory(void) override {}
+    VolumeLoaderPluginFactory();
 
-    /**
-     * Get plugin icon
-     * @param color Icon color for flat (font) icons
-     * @return Icon
-     */
-    QIcon getIcon(const QColor& color = Qt::black) const override;
+    ~VolumeLoaderPluginFactory() override {}
 
     VolumeLoaderPlugin* produce() override;
 
